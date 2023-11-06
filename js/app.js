@@ -11,6 +11,7 @@ const viewResults = document.querySelector('button');
 let leftProductInstance = null;
 let centerProductInstance = null;
 let rightProductInstance = null;
+const ulElem = document.querySelector('ul');
 
 
 function Products (name, src, views, clicks) {
@@ -34,7 +35,7 @@ let pen = new Products ('Pen', './img/pen.jpg');
 let petSweep = new Products ('Pet Sweep', './img/pet-sweep.jpg');
 let scissors = new Products ('Scissors', './img/scissors.jpg');
 let shark = new Products ('Shark', './img/shark.jpg');
-let sweep = new Products ('Sweep', './img/sweep.jpg');
+let sweep = new Products ('Sweep', './img/sweep.png');
 let tauntaun = new Products ('Taun Taun', './img/tauntaun.jpg');
 let unicorn = new Products ('Unicorn', './img/unicorn.jpg');
 let waterCan = new Products ('Water Can', './img/water-can.jpg');
@@ -77,17 +78,17 @@ function renderProducts() {
     }
 
     leftProductInstance = workingProducts.pop();
-    leftProductImage.setAttribute('src', leftProductImage.src);
+    leftProductImage.setAttribute('src', leftProductInstance.src);
     
     rightProductInstance = workingProducts.pop();
-    rightProductImage.setAttribute('src', rightProductImage.src);
+    rightProductImage.setAttribute('src', rightProductInstance.src);
 
     centerProductInstance = workingProducts.pop();
-    centerProductImage.setAttribute('src', centerProductImage.src);
+    centerProductImage.setAttribute('src', centerProductInstance.src);
 
     leftProductInstance.views += 1;
-    rightProductInstance += 1;
-    centerProductInstance += 1
+    rightProductInstance.views += 1;
+    centerProductInstance.views += 1
 }
 
 function shuffleArray(array) {
@@ -125,7 +126,9 @@ function renderResults() {
     for (let i =0; i<allProducts.length; i++){
         const currentProduct = allProducts[i];
         const result =`${currentProduct.name} had ${currentProduct.views} views and was clicked ${currentProduct.clicks} times.`;
-        console.log(result)
+        const liElem = document.createElement('li');
+        ulElem.appendChild(liElem);
+        liElem.textContent = result;
     }
 }
 
