@@ -1,95 +1,80 @@
 'use strict';
 
 let workingProducts = [];
-const allProducts= [];
+const productNames= ['bag','boots', 'banana', 'bathroom', 'breakfast', 'bubblegum','chair', 'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun', 'unicorn', 'water-can', 'wine-glass'];
 const leftProductImage = document.querySelector('section img:first-child');
 const centerProductImage = document.querySelector('section img:nth-child(2)');
 const rightProductImage = document.querySelector('section img:nth-child(3)');
 let clickCtr = 0;
 const maxClicks = 25;
-const viewResults = document.querySelector('button');
-let leftProductInstance = null;
-let centerProductInstance = null;
-let rightProductInstance = null;
+const viewResults = document.getElementById('viewResults');
+let leftProduct = null;
+let centerProduct = null;
+let rightProduct = null;
 const ulElem = document.querySelector('ul');
+let leftProductInstance = leftProduct;
+let rightProductInstance = rightProduct;
+let centerProductInstance = centerProduct;
+let allProducts =[]
 
-
-function Products (name, src, views, clicks) {
+function Products (name, src) {
     this.name = name;
     this.src = src;
     this.views = 0;
     this.clicks = 0;
+    allProducts.push(this);
 }
 
-let bag = new Products ('Bag', './img/bag.jpg');
-let banana = new Products ('Banana', './img/banana.jpg');
-let bathroom = new Products ('Bathroom', './img/bathroom.jpg');
-let boots = new Products ('Boots', './img/boots.jpg');
-let breakfast = new Products ('Breakfast', './img/breakfast.jpg');
-let bubblegum= new Products ('Bubblegum', './img/bubblegum.jpg');
-let chair = new Products ('Chair', './img/chair.jpg');
-let cthulhu = new Products ('Cthulhu', './img/cthulhu.jpg');
-let dogDuck = new Products ('Dog Duck', './img/dog-duck.jpg');
-let dragon = new Products ('Dragon', './img/dragon.jpg');
-let pen = new Products ('Pen', './img/pen.jpg');
-let petSweep = new Products ('Pet Sweep', './img/pet-sweep.jpg');
-let scissors = new Products ('Scissors', './img/scissors.jpg');
-let shark = new Products ('Shark', './img/shark.jpg');
-let sweep = new Products ('Sweep', './img/sweep.png');
-let tauntaun = new Products ('Taun Taun', './img/tauntaun.jpg');
-let unicorn = new Products ('Unicorn', './img/unicorn.jpg');
-let waterCan = new Products ('Water Can', './img/water-can.jpg');
-let wineGlass = new Products ('Wine Glass', './img/wine-glass.jpg');
 
+function createProducts(){
+    for (let i = 0; i < productNames.length; i++){
+    const productName = productNames[i];
+    const productInstance = new Products(productName, `./img/${productName}.jpg`);
+// console.log(productInstance)
+}
+}
+createProducts()
+console.log(allProducts)
 
-
-allProducts.push(bag);
-allProducts.push(banana);
-allProducts.push(bathroom);
-allProducts.push(boots);
-allProducts.push(breakfast);
-allProducts.push(bubblegum);
-allProducts.push(chair);
-allProducts.push(cthulhu);
-allProducts.push(dogDuck);
-allProducts.push(dragon);
-allProducts.push(pen);
-allProducts.push(petSweep);
-allProducts.push(scissors);
-allProducts.push(shark);
-allProducts.push(sweep);
-allProducts.push(tauntaun);
-allProducts.push(unicorn);
-allProducts.push(waterCan);
-allProducts.push(wineGlass);
+const usedProducts= [];
 
 function renderProducts() {
+    console.log('render products', allProducts)
     if(clickCtr == maxClicks){
-        viewResults.addEventListener('click', handleViewResultsClick);
-
-        leftProductImage.removeEventListener('click', handleLeftProductClick);
-        centerProductImage.removeEventListener('click', handleCenterProductClick);
-        rightProductImage.removeEventListener('click', handleRightProductClick);
+        endVoting();
+        return;
     }
-
-    if(workingProducts.length<=1){
+    if(workingProducts.length<=3){ 
         workingProducts = allProducts.slice();
+        console.log(workingProducts);
         shuffleArray(workingProducts);
+        // avoidRepeats(workingProducts);
+        // console.log(usedProducts)
+        // console.log(workingProducts)
+        //add function to remove previously seen items//
     }
 
-    leftProductInstance = workingProducts.pop();
-    leftProductImage.setAttribute('src', leftProductInstance.src);
-    
-    rightProductInstance = workingProducts.pop();
-    rightProductImage.setAttribute('src', rightProductInstance.src);
+    leftProduct = workingProducts.pop();
+    usedProducts.push(leftProduct);
+    rightProduct = workingProducts.pop();
+    usedProducts.push(rightProduct)
+    centerProduct = workingProducts.pop();
+    usedProducts.push(centerProduct)
 
-    centerProductInstance = workingProducts.pop();
-    centerProductImage.setAttribute('src', centerProductInstance.src);
 
-    leftProductInstance.views += 1;
-    rightProductInstance.views += 1;
-    centerProductInstance.views += 1
+    leftProduct.views += 1;
+    rightProduct.views += 1;
+    centerProduct.views += 1;
+
+    leftProductImage.setAttribute('src', leftProduct.src);
+    rightProductImage.setAttribute('src', rightProduct.src);
+    centerProductImage.setAttribute('src', centerProduct.src);
+
 }
+
+//array creation, adding on insurance that random photos do not repeat: 
+
+let shuffledArray = [];
 
 function shuffleArray(array) {
     for (let i = array.length -1; i > 0; i-- ){ 
@@ -97,21 +82,43 @@ function shuffleArray(array) {
         [array [i], array [j]] = [array[j], array[i]];
     }
 }
+function avoidRepeats(array){
+    // if (array.length ===0){
+    //     array = allProducts;
+        // shuffleArray(array);
+    // }
+    const currentProduct = array.pop();
+
+    if (usedProducts.includes(currentProduct)){
+        array.unshift(currentProduct);
+        return array;
+    } else {
+        usedProducts.push(currentProduct);
+        console.log('hello')
+        return currentProduct
+    }
+    }
+    if (workingProducts.length <= 5){
+       usedProducts.pop();
+    }
+
 function handleLeftProductClick() {
-    leftProductInstance.clicks += 1;
+    leftProduct.clicks += 1;
     clickCtr += 1;
     renderProducts();
 }
 function handleRightProductClick() {
-    rightProductInstance.clicks += 1;
+    rightProduct.clicks += 1;
     clickCtr += 1;
     renderProducts();
 }
 function handleCenterProductClick() {
-    centerProductInstance.clicks += 1;
+    centerProduct.clicks += 1;
+    console.log(centerProductImage)
     clickCtr += 1;
     renderProducts();
 }
+
 function handleViewResultsClick(){
     renderResults();
 }
@@ -120,8 +127,15 @@ leftProductImage.addEventListener('click', handleLeftProductClick);
 rightProductImage.addEventListener('click', handleRightProductClick);
 centerProductImage.addEventListener('click', handleCenterProductClick);
 
-renderProducts();
+function endVoting(){
+    leftProductImage.removeEventListener('click', handleLeftProductClick);
+    centerProductImage.removeEventListener('click', handleCenterProductClick);
+    rightProductImage.removeEventListener('click', handleRightProductClick);
 
+   viewResults.hidden = false;
+    viewResults.addEventListener('click', handleViewResultsClick);
+
+}
 function renderResults() {
     for (let i =0; i<allProducts.length; i++){
         const currentProduct = allProducts[i];
@@ -130,5 +144,77 @@ function renderResults() {
         ulElem.appendChild(liElem);
         liElem.textContent = result;
     }
+    renderChart();
 }
 
+function renderChart(){
+let productNames = [];
+let productViews = [];
+let productClicks = [];
+
+for (let i =0; i< allProducts.length; i++){
+    productNames.push(allProducts[i].name);
+    productViews.push(allProducts[i].views);
+    productClicks.push(allProducts[i].clicks);
+}
+// return{
+//     productNames,
+//     productViews,
+//     productClicks,
+// };
+
+const data = {
+    labels: productNames ,
+    datasets: [
+        {
+      label: 'Product Name',
+      data: productNames,
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)'
+      ],
+      borderColor: [
+        'rgb(255, 99, 132)'
+      ],
+      borderWidth: 1,
+    },
+    {
+      label: 'Views',
+      data: productViews,
+      backgroundColor: [
+        'rgba(255, 159, 64, 0.2)'
+      ],
+      borderColor: [
+        'rgb(255, 159, 64)'
+      ],
+      borderWidth: 1,
+    },
+    {
+    label: 'Clicks',
+    data: productClicks,
+    backgroundColor: [
+      'rgba(255, 159, 64, 0.2)'
+    ],
+    borderColor: [
+      'rgb(255, 159, 64)'
+    ],
+    borderWidth: 1,
+        },
+    ]
+};
+
+  const config = {
+    type: 'bar',
+    data: data,
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    },
+  };
+  let canvasChart = document.getElementById('myChart');
+  const myChart = new Chart(canvasChart, config);
+}
+
+renderProducts();

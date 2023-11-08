@@ -2,3 +2,14 @@ section img{
     width: 460px;
     max-height: 26rem;
 }
+/* #images{
+    display: flex;
+    flex-wrap:nowrap;
+    gap: 2rem;
+    padding: 4rem 0;
+}
+#images img{
+    width: 100%;
+    object-fit: contain;
+    height: 15rem;
+} */
