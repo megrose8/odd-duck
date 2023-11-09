@@ -5,6 +5,7 @@ const centerProductImage = document.querySelector('section img:nth-child(2)');
 const rightProductImage = document.querySelector('section img:nth-child(3');
 const viewResults = document.getElementById('viewResults');
 const ulElem = document.querySelector('ul');
+const productStorageKey = 'product-storage-key';
 
 let workingProducts = [];
 let clickCtr = 0;
@@ -111,6 +112,29 @@ function handleProductClick(event) {
   clickCtr += 1;
   renderProducts();
 }
+// creating storage//
+
+function loadProducts (){
+  const storedProductsText = localStorage.getItem(productStorageKey);
+
+  if (storedProductsText){
+    parseStoredProducts(storedProductsText);
+  } else {
+    createProducts();
+  }
+  selector = new Selector (allProducts, 3);
+  }
+
+function parseStoredProducts(storedProductsText){
+  const storedProductsObjects = JSON.parse(storedProductsText);
+
+  allProducts.length = 0;
+for (let productObject of storedProductsObjects ){
+  const currentProduct = new Product(productObject.name, productObject.src, productObject.views, productObject.clicks );
+  allProducts.push(currentProduct);
+}
+}
+////
 
 function endVoting() {
   leftProductImage.removeEventListener('click', handleProductClick);
@@ -120,6 +144,10 @@ function endVoting() {
   viewResults.hidden = false;
   viewResults.addEventListener('click', renderResults);
 
+  saveProducts();
+}
+function saveProducts(){
+  localStorage.setItem(productStorageKey, JSON.stringify(allProducts));
 }
 
 function renderResults() {
@@ -138,6 +166,8 @@ renderProducts();
 leftProductImage.addEventListener('click', handleProductClick);
 rightProductImage.addEventListener('click', handleProductClick);
 centerProductImage.addEventListener('click', handleProductClick);
+
+saveProducts();
 
 
 const productClicks = [];
