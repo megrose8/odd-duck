@@ -2,7 +2,7 @@ section img{
     width: 460px;
     max-height: 26rem;
 }
-/* #images{
+#images{
     display: flex;
     flex-wrap:nowrap;
     gap: 2rem;
@@ -13,3 +13,13 @@ section img{
     object-fit: contain;
     height: 15rem;
 } */
+h2{
+    background-color: red;
+}
+#results{
+    background-color: green
+}
+
+header{
+    border-bottom: 5px solid black;
+}
